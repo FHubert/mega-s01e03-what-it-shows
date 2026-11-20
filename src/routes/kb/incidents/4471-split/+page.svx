@@ -17,7 +17,7 @@ signature: Hubert
 cause, they are two problems with two different fixes, so each now has its own ticket.
 
 <Callout>
-Resolved. #4471 closed on 5 October: the parser is fixed (`fix(dates): parse dd/mm for eu locales`),
+Resolved. #4471 closed on 5 October: the parser is fixed (<code>fix(dates): parse dd/mm for eu locales</code>),
 and the hint is won't fix, because the booking-v3 form is retired. Both tickets are closed.
 </Callout>
 
