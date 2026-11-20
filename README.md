@@ -39,5 +39,5 @@ Exported 2026-10-04 from the `support` repo, `apps/kb/` → `src/`.
 
 - New page: `src/routes/kb/incidents/4471-split/+page.svx` (signed; logic in `src/lib/kb/problems.ts` and `src/lib/kb/ProblemTable.svelte`).
 - The page as the desk sees it: `rendered/kb/incidents/4471-split.html` (static build) and `rendered/4471-split.png` (screenshot).
-- Tickets: [#1 parser, 374 reports](../../issues/1) · [#2 booking-v3 hint, 33 reports](../../issues/2) · [#3 one-day move, 5 reports](../../issues/3).
+- Tickets: [#1 parser, 379 reports](../../issues/1) · [#2 booking-v3 hint, 33 reports](../../issues/2). (#3 was closed as a duplicate of #1.)
 - Rebuild: `npm install && npm run build` (output in `build/`).

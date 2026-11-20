@@ -1,6 +1,6 @@
 ---
 layout: runbook
-title: '#4471 split · three problems, not one'
+title: '#4471 split · two problems, not one'
 owner: Hubert
 status: open
 reviewed: 2026-11-20
@@ -13,42 +13,39 @@ signature: Hubert
   import RenderStamp from '#lib/kb/RenderStamp.svelte';
 </script>
 
-[#4471](/kb/incidents/4471) says the date reports are one issue with one fix queued. Reading the
-reports, not just their subjects, shows three problems. Each needs its own fix, so each now has
-its own ticket.
+[#4471](/kb/incidents/4471) says the date reports are one issue with one fix queued. Grouped by
+cause, they are two problems with two different fixes, so each now has its own ticket.
 
 <Callout kind="warn">
-The queued parser fix closes only the first row below. The other two keep coming after it ships.
+The queued parser fix closes only the first row below. The booking-v3 reports keep coming after it ships.
 </Callout>
 
 ## What #4471 holds
 
 <ProblemTable ticket={4471} />
 
-## The three problems
+## The two problems
 
 1. **parser.** The shared parser reads dates month first, and every tenant on file writes the day
-   first, so any day of 12 or lower swaps with the month. It reaches the parser by app, email and
-   the `booking-v2` form.
-2. **hint.** The `booking-v3` form prints `MM/DD/YYYY` under its date field. People type what the
-   hint says, and the form reads the date the tenant's way. The symptom is the same swap, but the
-   parser fix does not touch it: the hint has to change.
-3. **one-day.** Some bookings move by one day, not by a swapped month: "Client in Lisbon got
-   Tuesday. Client in Toronto got Monday." The desk had already read these as a one-day move
-   (`desk-notes.json`), but #4471 still footnoted them under the parser. This is a time zone bug.
+   first, so any day of 12 or lower swaps with the month. It reaches the parser by app, by email and
+   through the `booking-v2` form. Fix: parse in the tenant's locale.
+2. **hint.** The `booking-v3` form prints `MM/DD/YYYY` under its date field. The tenant's people
+   type what the hint says, month first, and the form reads the date the tenant's way. The symptom
+   is the same swap, but the parser fix does not touch it. Fix: make the hint match the tenant.
 
 ## How the split is made
 
-- Rows come from `reports-4471.json`. The export pages overlap, so a report is counted once per id.
-- Cause comes from the tenant and the channel (`causes.ts`), not from the intake tag. Intake guesses
-  from the browser and disagrees with the tenant often.
-- A report the desk read as a one-day move (`desk-notes.json`) counts under `one-day`.
+- Rows come from `reports-4471.json`. The export pages overlap, so a report counts once per id.
+- The cause comes from the tenant: where they are and which booking form they run (`causes.ts`).
+- What a report was tagged or read as does not make a problem. Intake tags from the reporter's
+  browser, and the desk's notes (`desk-notes.json`) record how a report read. Both are shown above,
+  and both count under the cause.
 - The numbers above are computed at render time, so they follow the data as the desk adds reports.
 
 ## Lessons
 
 - A matching subject line does not make a matching cause ([decision 0001](/kb/decisions/0001-dedupe-by-subject)).
-  Before you close a big ticket as one issue, read the report bodies and group them by cause.
-- A footnote is not a ticket. If the desk reads reports differently, give them a row of their own.
+  Before you close a big ticket as one issue, group its reports by cause.
+- Count by cause, not by tag or by reading. A tag is a guess; a reading is a symptom.
 
 <RenderStamp {signature} />

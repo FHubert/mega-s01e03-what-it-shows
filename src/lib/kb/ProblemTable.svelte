@@ -10,11 +10,10 @@
   const LABEL: Record<Problem, string> = {
     parser: 'parser reads month first; tenant writes day first',
     hint: 'booking-v3 form hints MM/DD, reads day first',
-    'one-day': 'booking moves by one day (time zone)',
     unplaced: 'no tenant on file: not placed',
   };
 
-  const split = $derived(splitTicket(reports as Report[], ticket, tenantOf, notes.oneDayMove));
+  const split = $derived(splitTicket(reports as Report[], ticket, tenantOf));
 </script>
 
 <p class="sum">
@@ -24,12 +23,13 @@
 </p>
 
 <table>
-  <thead><tr><th>problem</th><th>reports</th><th>tenants</th><th>seen</th><th>ticket</th></tr></thead>
+  <thead><tr><th>problem</th><th>reports</th><th>intake tagged</th><th>tenants</th><th>seen</th><th>ticket</th></tr></thead>
   <tbody>
     {#each split.groups as g (g.problem)}
       <tr>
         <td><code>{g.problem}</code> {LABEL[g.problem]}</td>
         <td>{g.reports.length}</td>
+        <td class="muted">{Object.entries(g.taggedAs).sort((x, y) => y[1] - x[1]).map(([t, n]) => `${t} ×${n}`).join(' · ')}</td>
         <td>{g.tenants}</td>
         <td>{g.firstSeen} → {g.lastSeen}</td>
         <td>{#if g.problem !== 'unplaced'}<a href={ISSUES[g.problem]}>{ISSUES[g.problem].replace(/^.*\/issues\//, 'issue ')}</a>{:else}none{/if}</td>
@@ -38,6 +38,14 @@
   </tbody>
 </table>
 
+{#each split.groups as g (g.problem)}
+  {@const moved = g.reports.filter((r) => notes.oneDayMove.includes(r.id)).length}
+  {#if moved}
+    <p class="muted">{moved} of the <code>{g.problem}</code> reports were read by the desk as a one-day move. Same tenants, same way in, so they count here: a reading is not a cause.</p>
+  {/if}
+{/each}
+
 <style>
   .sum { font-size: 1.1rem; }
+  .muted { color: var(--muted); font-size: 0.85em; }
 </style>
