@@ -2,7 +2,7 @@
 layout: runbook
 title: '#4471 split · two problems, not one'
 owner: Hubert
-status: open
+status: resolved
 reviewed: 2026-11-20
 signature: Hubert
 ---
@@ -16,8 +16,9 @@ signature: Hubert
 [#4471](/kb/incidents/4471) says the date reports are one issue with one fix queued. Grouped by
 cause, they are two problems with two different fixes, so each now has its own ticket.
 
-<Callout kind="warn">
-The queued parser fix closes only the first row below. The booking-v3 reports keep coming after it ships.
+<Callout>
+Resolved. #4471 closed on 5 October: the parser is fixed (`fix(dates): parse dd/mm for eu locales`),
+and the hint is won't fix, because the booking-v3 form is retired. Both tickets are closed.
 </Callout>
 
 ## What #4471 holds
@@ -28,10 +29,10 @@ The queued parser fix closes only the first row below. The booking-v3 reports ke
 
 1. **parser.** The shared parser reads dates month first, and every tenant on file writes the day
    first, so any day of 12 or lower swaps with the month. It reaches the parser by app, by email and
-   through the `booking-v2` form. Fix: parse in the tenant's locale.
+   through the `booking-v2` form. Fix: parse in the tenant's locale. **Fixed** in `fix(dates): parse dd/mm for eu locales`.
 2. **hint.** The `booking-v3` form prints `MM/DD/YYYY` under its date field. The tenant's people
    type what the hint says, month first, and the form reads the date the tenant's way. The symptom
-   is the same swap, but the parser fix does not touch it. Fix: make the hint match the tenant.
+   is the same swap, but the parser fix does not touch it. **Won't fix:** the booking-v3 form is retired, so the hint is gone with it.
 
 ## How the split is made
 
